@@ -14,10 +14,11 @@ def create_app():
         init_db(db_url)
 
     
-    from app.api.routes import health_bp, checks_bp, history_bp
+    from app.api.routes import health_bp, checks_bp, history_bp, monitored_bp
     flask_app.register_blueprint(health_bp)
     flask_app.register_blueprint(checks_bp)
     flask_app.register_blueprint(history_bp)
+    flask_app.register_blueprint(monitored_bp)
 
     return flask_app
 

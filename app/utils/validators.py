@@ -2,6 +2,9 @@ from typing import Tuple
 from urllib.parse import urlparse
 
 def validate_url(url:str)->Tuple[bool, str|None]:
+    
+    if url == "":
+        return False, "Missing required field: 'url'"
     try:
         parsed = urlparse(url)
         if not parsed.scheme:
@@ -17,6 +20,10 @@ def validate_url(url:str)->Tuple[bool, str|None]:
     return True, None
 
 def validate_timeout(timeout:[int|float])->Tuple[bool, str|None]:
+
+    if timeout == "":
+        return False, "Missing required field: 'timeout'"
+        
     if not isinstance(timeout, (int, float)):
         return False, "Invalid timeout format"
 

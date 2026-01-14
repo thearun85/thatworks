@@ -23,12 +23,6 @@ def get_health():
     data = request.get_json()
 
     url = data.get("url", "").strip()
-    # Validate url is not missing or empty
-    if url == "":
-        return jsonify({
-            "error": "Missing required field: 'url'"
-        }), 400
-
     is_valid, error =  validate_url(url)
     if not is_valid:
         return jsonify({
