@@ -13,9 +13,14 @@ def create_app():
     if db_url:
         init_db(db_url)
 
-    from app.api.routes import health_bp, checks_bp
+    from app.db import get_engine
+    from app.models import Base, HealthCheck
+    Base.metadata.create_all(bind=get_engine())
+    
+    from app.api.routes import health_bp, checks_bp, history_bp
     flask_app.register_blueprint(health_bp)
     flask_app.register_blueprint(checks_bp)
+    flask_app.register_blueprint(history_bp)
 
     return flask_app
 

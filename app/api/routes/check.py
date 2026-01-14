@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from app.services import check_health
 from app.utils import validate_url, validate_timeout
-
+from app.db import get_db
+from app.models import HealthCheck
 
 checks_bp = Blueprint("checks", __name__, url_prefix='/api/v1')
 
@@ -40,8 +41,26 @@ def get_health():
         return jsonify({
             "error": error
         }), 400
-
+    
     result = check_health(url, timeout)
+
+    db_session = get_db()
+    try:
+        hc = HealthCheck(
+            url=url,
+            timeout_s=timeout,
+            status_code=result['status_code'],
+            is_healthy=True if result['status'] == "healthy" else False,
+            response_time_ms=result['response_time_ms'],
+            error=result['error'],
+        )
+        db_session.add(hc)
+        db_session.commit()
+        db_session.refresh(hc)
+        result['check_id'] = hc.id
+    finally:
+        db_session.close()
+    
     return jsonify(result), 200
     
         
