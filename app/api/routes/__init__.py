@@ -1,0 +1,4 @@
+from .health import health_bp
+from .check import checks_bp
+
+__all__ = ['health_bp', 'checks_bp']
