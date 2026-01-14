@@ -10,6 +10,10 @@ services:
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/monitor
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
@@ -19,3 +23,21 @@ services:
       start_period: 5s
     volumes:
       - ./app:/app/app
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=monitor
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "monitor"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data_monitor:/var/lib/postgresql/data
+
+volumes:
+  pg_data_monitor:

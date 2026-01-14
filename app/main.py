@@ -1,12 +1,17 @@
 from flask import Flask
 from datetime import datetime, timezone
-
+import os
+from app.db import init_db
 def create_app():
     flask_app = Flask("thatworks-monitor")
 
     service_start_timestamp = datetime.now(timezone.utc)
     flask_app.config['SERVICE_VERSION'] = "0.1.0"
     flask_app.config['SERVICE_START_TIMESTAMP'] = service_start_timestamp
+
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        init_db(db_url)
 
     from app.api.routes import health_bp, checks_bp
     flask_app.register_blueprint(health_bp)
