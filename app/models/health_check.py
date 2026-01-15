@@ -15,7 +15,7 @@ class HealthCheck(Base):
     response_time_ms: Mapped[float|None] = mapped_column(Float, nullable=True)
     error: Mapped[str|None] = mapped_column(String, nullable=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now(), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), index=True)
 
     def to_dict(self):
         return {
